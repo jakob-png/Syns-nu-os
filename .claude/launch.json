@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ContentFlow Dev Server",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "3000", "--directory", "/Users/jakobkasselias/Downloads/Content flow - system "],
+      "port": 3000
+    }
+  ]
+}
