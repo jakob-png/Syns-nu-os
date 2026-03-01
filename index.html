@@ -422,6 +422,43 @@ td:first-child{text-align:center}
 @keyframes tIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 .toast-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 @keyframes fadeSlide{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── BOARD / KANBAN ──────────────────────────────────────────────────── */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:start}
+.board-col{background:var(--off);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.board-col-hd{padding:12px 16px;border-bottom:1px solid var(--line);font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--gray2);display:flex;align-items:center;justify-content:space-between}
+.board-col-body{padding:10px;display:flex;flex-direction:column;gap:8px;min-height:120px}
+.card{background:var(--off2);border:1px solid var(--line);border-radius:var(--r);padding:14px;transition:border-color 0.15s}
+.card:hover{border-color:var(--line2)}
+.card-name{font-weight:700;font-size:0.85rem;color:var(--black);margin-bottom:2px}
+.card-tag{font-size:0.67rem;color:var(--gray2);text-transform:uppercase;letter-spacing:0.5px}
+.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:8px}
+.avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#0f1117;flex-shrink:0}
+
+/* ── CONTENT ITEMS ───────────────────────────────────────────────────── */
+.items-box{background:var(--off2);border:1px solid var(--line);border-radius:var(--r);padding:0 12px;margin-bottom:8px;max-height:180px;overflow-y:auto}
+.item-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.item-row:last-child{border-bottom:none}
+.item-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;flex-shrink:0;transition:all 0.14s;cursor:pointer}
+.item-check.on{background:var(--teal);border-color:var(--teal);color:var(--white)}
+.item-title{flex:1;font-size:0.8rem;color:var(--black)}
+.item-meta{font-size:0.65rem;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--off);color:var(--gray);border:1px solid var(--line);white-space:nowrap}
+.item-del{font-size:0.75rem;color:var(--gray2);cursor:pointer;padding:3px 6px;border-radius:4px;border:none;background:none;transition:all 0.12s}
+.item-del:hover{color:var(--red);background:var(--red-lt)}
+
+/* ── TEAM ────────────────────────────────────────────────────────────── */
+.avatar-chip{display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:600;padding:2px 8px 2px 4px;border-radius:20px;background:var(--off2);border:1px solid var(--line2);white-space:nowrap}
+.team-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.team-row:last-child{border-bottom:none}
+
+/* ── VIEW TOGGLE ─────────────────────────────────────────────────────── */
+.view-toggle{display:flex;gap:3px;background:var(--off2);border-radius:20px;padding:3px}
+.vt-btn{font-family:var(--sans);font-size:0.75rem;font-weight:600;padding:5px 12px;border-radius:17px;border:none;cursor:pointer;transition:all 0.14s;color:var(--gray2);background:transparent}
+.vt-btn.on{background:var(--off);color:var(--black);box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.filter-chips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.fchip{display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:600;padding:4px 10px 4px 5px;border-radius:20px;background:var(--off2);border:1px solid var(--line2);cursor:pointer;transition:all 0.15s;color:var(--gray)}
+.fchip:hover{border-color:var(--teal);color:var(--teal)}
+.fchip.active{background:var(--teal-lt);border-color:rgba(0,201,184,0.25);color:var(--teal)}
 </style>
 </head>
 <body>
@@ -462,6 +499,7 @@ td:first-child{text-align:center}
   </nav>
 
   <div class="header-right">
+    <button class="btn btn-line" onclick="open_('mTeam');renderTeamList()">⚇ Team</button>
     <button class="btn btn-black" onclick="openAdd()">
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg>
       Add Client
@@ -477,7 +515,7 @@ td:first-child{text-align:center}
 
 <!-- CLIENT MODAL -->
 <div class="overlay" id="mClient">
-  <div class="modal">
+  <div class="modal modal-lg" style="width:620px">
     <div class="modal-hd">
       <div class="modal-title" id="mt-title">New Client</div>
       <div class="modal-sub" id="mt-sub">Add a new client to your content pipeline.</div>
@@ -494,7 +532,26 @@ td:first-child{text-align:center}
           <option value="delivered">Delivered</option>
         </select>
       </div>
-      <div class="fg full"><label class="flbl">Notes</label><input class="finp" id="f-notes" placeholder="Optional notes…"></div>
+      <div class="fg"><label class="flbl">Assigned To</label>
+        <select class="fsel" id="f-assignee"><option value="">— No assignee —</option></select>
+      </div>
+      <div class="fg"><label class="flbl">Notes</label><input class="finp" id="f-notes" placeholder="Optional notes…"></div>
+    </div>
+    <div class="fg" style="margin-bottom:8px">
+      <label class="flbl" style="margin-bottom:8px;display:block">Content Plan</label>
+      <div class="items-box" id="items-list-modal"></div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <input class="finp" id="i-title" placeholder="Content title…" style="flex:1">
+        <select class="fsel" id="i-type" style="width:110px">
+          <option>Reel</option><option>Story</option><option>Post</option>
+          <option>Video</option><option>Shorts</option><option>Podcast</option><option>Blog</option>
+        </select>
+        <select class="fsel" id="i-plat" style="width:120px">
+          <option>Instagram</option><option>YouTube</option><option>TikTok</option>
+          <option>LinkedIn</option><option>Facebook</option><option>X</option>
+        </select>
+        <button class="btn btn-teal" onclick="addItem()">+ Add</button>
+      </div>
     </div>
     <div class="modal-ft">
       <button class="btn btn-line" onclick="close_('mClient')">Cancel</button>
@@ -545,12 +602,34 @@ td:first-child{text-align:center}
   </div>
 </div>
 
+<!-- TEAM MODAL -->
+<div class="overlay" id="mTeam">
+  <div class="modal" style="width:380px">
+    <div class="modal-hd">
+      <div class="modal-title">Team</div>
+      <div class="modal-sub">Manage team members and colours</div>
+    </div>
+    <div id="team-list" style="margin-bottom:14px"></div>
+    <div style="display:flex;gap:8px">
+      <input class="finp" id="t-name" placeholder="Name…" style="flex:1" onkeydown="if(event.key==='Enter')addMember()">
+      <button class="btn btn-teal" onclick="addMember()">+ Add</button>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-line" onclick="close_('mTeam')">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOASTS -->
 <div class="toasts" id="toasts"></div>
 
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────
 const CYCLE = 90;
+const COLORS = ['#00C9B8','#5AC8FA','#bf7fff','#30D158','#FF453A','#FFD60A','#FF9F0A'];
+let team = JSON.parse(localStorage.getItem('cf3-team') || '[]');
+function saveTeam(){ localStorage.setItem('cf3-team', JSON.stringify(team)); }
+
 const QC = [
   "Videos match the content plan",
   "Brand guidelines followed throughout",
@@ -581,6 +660,7 @@ if (!clients) {
 
 let nid = Math.max(...clients.map(c=>c.id),0)+1;
 let fil='all', q='', editId=null, revId=null, revChecks=[], sCol='due', sDir=1;
+let view='table', filterAssignee=null, editItems=[];
 
 function save(){ localStorage.setItem('cf3', JSON.stringify(clients)); }
 
@@ -592,6 +672,7 @@ const pct     = c => { let s=new Date(c.last),e=nextDue(c),n=new Date(); return 
 function getList(){
   let l=[...clients];
   if(q){ const lq=q.toLowerCase(); l=l.filter(c=>c.name.toLowerCase().includes(lq)||c.tag.toLowerCase().includes(lq)); }
+  if(filterAssignee) l=l.filter(c=>c.assignee===filterAssignee);
   if(fil==='overdue')    l=l.filter(c=>dLeft(c)<0  && c.s!=='delivered');
   if(fil==='upcoming')   l=l.filter(c=>dLeft(c)>=0 && dLeft(c)<=14 && c.s!=='delivered');
   if(fil==='inprogress') l=l.filter(c=>c.s==='inprogress');
@@ -625,10 +706,64 @@ function cts(){
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────
+function memberChip(c){
+  const m=team.find(x=>x.id===c.assignee);
+  if(!m) return '';
+  return `<span class="avatar-chip"><span class="avatar" style="background:${m.color}">${m.name[0]}</span>${m.name}</span>`;
+}
+
+function itemsBar(c){
+  const items=c.items||[];
+  if(!items.length) return `<span class="qc-none">—</span>`;
+  const done=items.filter(x=>x.done).length;
+  const pColor=done===items.length?'var(--teal)':done>0?'var(--orange)':'var(--gray2)';
+  return `<div class="prog">
+    <div class="prog-track"><div class="prog-fill" style="width:${Math.round(done/items.length*100)}%;background:${pColor}"></div></div>
+    <span class="prog-lbl">${done}/${items.length} done</span>
+  </div>`;
+}
+
+function renderCard(c){
+  const dl=dLeft(c), pp=pct(c), done=c.s==='delivered';
+  const pColor=pp>=100?'var(--red)':pp>75?'var(--orange)':'var(--teal)';
+  let dtTxt=done?'Done':dl<0?`${Math.abs(dl)}d overdue`:`${dl}d left`;
+  let dtCol=done?'var(--gray2)':dl<0?'var(--red)':dl<=7?'var(--orange)':'var(--teal)';
+  const m=team.find(x=>x.id===c.assignee);
+  let actHtml='';
+  if(c.s==='scheduled')  actHtml=`<button class="btn btn-line" style="font-size:0.7rem;padding:4px 10px" onclick="advance(${c.id},'inprogress')">▷ Start</button>`;
+  if(c.s==='inprogress') actHtml=`<button class="btn btn-line" style="font-size:0.7rem;padding:4px 10px" onclick="advance(${c.id},'review')">→ Submit</button>`;
+  if(c.s==='review')     actHtml=`<button class="btn btn-orng" style="font-size:0.7rem;padding:4px 10px" onclick="openReview(${c.id})">◎ Review</button>`;
+  if(c.s==='delivered')  actHtml=`<button class="btn btn-line" style="font-size:0.7rem;padding:4px 10px" onclick="newCycle(${c.id})">↺ New Cycle</button>`;
+  return `<div class="card" onclick="openEdit(${c.id})">
+    <div class="card-name">${c.name}</div>
+    <div class="card-tag">${c.tag||''}</div>
+    <div class="prog" style="margin-top:10px">
+      <div class="prog-track"><div class="prog-fill" style="width:${pp}%;background:${pColor}"></div></div>
+      <span class="prog-lbl" style="color:${dtCol}">${dtTxt}</span>
+    </div>
+    <div class="card-foot" onclick="event.stopPropagation()">
+      ${m?`<span class="avatar" style="background:${m.color}" title="${m.name}">${m.name[0]}</span>`:'<span></span>'}
+      ${actHtml}
+    </div>
+  </div>`;
+}
+
+function renderBoard(list){
+  const cols=['scheduled','inprogress','review','delivered'];
+  const lbl={scheduled:'Scheduled',inprogress:'In Progress',review:'Manager Review',delivered:'Delivered'};
+  const acc={scheduled:'var(--gray2)',inprogress:'var(--sky)',review:'var(--orange)',delivered:'var(--teal)'};
+  return `<div class="board">${cols.map(col=>{
+    const cards=list.filter(c=>c.s===col);
+    return `<div class="board-col">
+      <div class="board-col-hd"><span>${lbl[col]}</span><span class="hn-badge nb-gray" style="background:var(--off);color:${acc[col]}">${cards.length}</span></div>
+      <div class="board-col-body">${cards.length?cards.map(c=>renderCard(c)).join(''):`<div style="padding:20px;color:var(--gray2);font-size:0.78rem;text-align:center;opacity:0.5">Empty</div>`}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
 function render(){
   const ct = cts();
 
-  // Nav badges
   document.getElementById('nc-all').textContent       = ct.all;
   document.getElementById('nc-overdue').textContent   = ct.overdue;
   document.getElementById('nc-upcoming').textContent  = ct.upcoming;
@@ -636,7 +771,6 @@ function render(){
   document.getElementById('nc-review').textContent    = ct.review;
   document.getElementById('nc-delivered').textContent = ct.delivered;
 
-  // KPI band
   const kpis = [
     {n:ct.overdue,    l:'Overdue',     c:'var(--red)',    dot:'var(--red)'},
     {n:ct.upcoming,   l:'Due in 14d',  c:'var(--orange)', dot:'var(--orange)'},
@@ -657,91 +791,102 @@ function render(){
 
   let alertHtml='';
   if(ct.overdue>0 && fil==='all'){
-    alertHtml=`<div class="alert">
-      <div class="alert-led"></div>
+    alertHtml=`<div class="alert"><div class="alert-led"></div>
       <div class="alert-msg"><b>${ct.overdue} client${ct.overdue>1?'s':''} overdue</b> — requires immediate attention.</div>
     </div>`;
   }
 
-  let rows='';
-  if(!list.length){
-    rows=`<tr><td colspan="8"><div class="empty"><div class="empty-i">◈</div><div class="empty-t">Nothing here</div></div></td></tr>`;
+  // Team filter chips
+  const chipHtml = team.length ? `<div class="filter-chips">
+    ${team.map(m=>`<span class="fchip${filterAssignee===m.id?' active':''}" onclick="setAssigneeFilter(${m.id})">
+      <span class="avatar" style="background:${m.color};width:18px;height:18px;font-size:0.55rem">${m.name[0]}</span>${m.name}
+    </span>`).join('')}
+    ${filterAssignee?`<button class="btn btn-ico" style="font-size:0.7rem;padding:3px 8px" onclick="setAssigneeFilter(null)">✕ Clear</button>`:''}
+  </div>` : '';
+
+  // View toggle
+  const viewToggle=`<div class="view-toggle">
+    <button class="vt-btn${view==='table'?' on':''}" onclick="setView('table')">☰ Table</button>
+    <button class="vt-btn${view==='board'?' on':''}" onclick="setView('board')">⊞ Board</button>
+  </div>`;
+
+  let mainHtml='';
+  if(view==='board'){
+    mainHtml=renderBoard(list);
   } else {
-    list.forEach((c,i)=>{
-      const dl  = dLeft(c);
-      const pp  = pct(c);
-      const done= c.s==='delivered';
-
-      const rankCls = !done&&dl<0?'r-crit':!done&&dl<=7?'r-urg':'';
-      const rankVal = done?'—':i+1;
-
-      const bMap={scheduled:['bs','Scheduled'],inprogress:['bi','In Progress'],review:['br','Manager Review'],delivered:['bd','Delivered']};
-      const [bCls,bLbl]=bMap[c.s]||bMap.scheduled;
-
-      let dtCls='dt-ok', dtTxt=`${dl}d left`;
-      if(done)       {dtCls='dt-done';dtTxt='Done'}
-      else if(dl<0)  {dtCls='dt-over';dtTxt=`${Math.abs(dl)}d overdue`}
-      else if(dl<=7) {dtCls='dt-soon';dtTxt=`${dl}d left`}
-      else if(dl<=14){dtCls='dt-soon';dtTxt=`${dl}d left`}
-
-      const dFmt = nextDue(c).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-      const pColor = pp>=100?'var(--red)':pp>75?'var(--orange)':'var(--teal)';
-      let qcHtml=`<span class="qc-none">—</span>`;
-      if(c.s==='review')    qcHtml=`<span class="qc-pend">${c.qc.length}/${QC.length} checked</span><div class="qc-sub">Awaiting review</div>`;
-      if(c.s==='delivered') qcHtml=`<span class="qc-done">✓ Approved</span>${c.rev>0?`<div class="qc-sub">${c.rev} revision${c.rev>1?'s':''}</div>`:''}`;
-
-      let actHtml='';
-      if(c.s==='scheduled')  actHtml=`<button class="btn btn-line"  onclick="advance(${c.id},'inprogress')">▷ Start</button>`;
-      if(c.s==='inprogress') actHtml=`<button class="btn btn-line"  onclick="advance(${c.id},'review')">→ Submit</button>`;
-      if(c.s==='review')     actHtml=`<button class="btn btn-orng"  onclick="openReview(${c.id})">◎ Review</button>`;
-      if(c.s==='delivered')  actHtml=`<button class="btn btn-line"  onclick="newCycle(${c.id})">↺ New Cycle</button>`;
-
-      rows+=`
-        <tr>
+    let rows='';
+    if(!list.length){
+      rows=`<tr><td colspan="9"><div class="empty"><div class="empty-i">◈</div><div class="empty-t">Nothing here</div></div></td></tr>`;
+    } else {
+      list.forEach((c,i)=>{
+        const dl=dLeft(c), pp=pct(c), done=c.s==='delivered';
+        const rankCls=!done&&dl<0?'r-crit':!done&&dl<=7?'r-urg':'';
+        const rankVal=done?'—':i+1;
+        const bMap={scheduled:['bs','Scheduled'],inprogress:['bi','In Progress'],review:['br','Manager Review'],delivered:['bd','Delivered']};
+        const [bCls,bLbl]=bMap[c.s]||bMap.scheduled;
+        let dtCls='dt-ok',dtTxt=`${dl}d left`;
+        if(done){dtCls='dt-done';dtTxt='Done'}
+        else if(dl<0){dtCls='dt-over';dtTxt=`${Math.abs(dl)}d overdue`}
+        else if(dl<=14){dtCls='dt-soon';dtTxt=`${dl}d left`}
+        const dFmt=nextDue(c).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+        const pColor=pp>=100?'var(--red)':pp>75?'var(--orange)':'var(--teal)';
+        let qcHtml=`<span class="qc-none">—</span>`;
+        if(c.s==='review')    qcHtml=`<span class="qc-pend">${c.qc.length}/${QC.length} checked</span><div class="qc-sub">Awaiting review</div>`;
+        if(c.s==='delivered') qcHtml=`<span class="qc-done">✓ Approved</span>${c.rev>0?`<div class="qc-sub">${c.rev} rev.</div>`:''}`;
+        let actHtml='';
+        if(c.s==='scheduled')  actHtml=`<button class="btn btn-line" onclick="advance(${c.id},'inprogress')">▷ Start</button>`;
+        if(c.s==='inprogress') actHtml=`<button class="btn btn-line" onclick="advance(${c.id},'review')">→ Submit</button>`;
+        if(c.s==='review')     actHtml=`<button class="btn btn-orng" onclick="openReview(${c.id})">◎ Review</button>`;
+        if(c.s==='delivered')  actHtml=`<button class="btn btn-line" onclick="newCycle(${c.id})">↺ New Cycle</button>`;
+        rows+=`<tr>
           <td><span class="rank ${rankCls}">${rankVal}</span></td>
           <td><div><div class="cl-name">${c.name}</div><span class="cl-tag">${c.tag||''}</span></div></td>
           <td><span class="badge ${bCls}">${bLbl}</span></td>
+          <td>${memberChip(c)||'<span style="color:var(--gray2);font-size:0.78rem">—</span>'}</td>
           <td><div><span class="due-date">${dFmt}</span><span class="due-tag ${dtCls}">${dtTxt}</span></div></td>
           <td><div class="prog">
             <div class="prog-track"><div class="prog-fill" style="width:${pp}%;background:${pColor}"></div></div>
             <span class="prog-lbl">${Math.round(pp)}% of cycle</span>
           </div></td>
           <td><div>${qcHtml}</div></td>
-          <td style="color:var(--gray);font-size:0.78rem;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.notes||''}">${c.notes||'—'}</td>
+          <td>${itemsBar(c)}</td>
           <td><div class="acts">
             ${actHtml}
             <button class="btn btn-ico btn-line" onclick="openEdit(${c.id})" title="Edit">✎</button>
             <button class="btn btn-ico btn-red"  onclick="del(${c.id})"     title="Delete">✕</button>
           </div></td>
         </tr>`;
-    });
+      });
+    }
+    mainHtml=`<div class="tbl-wrap"><table>
+      <thead><tr>
+        <th>#</th>
+        <th onclick="setSort('name')"  class="th-sort${sCol==='name'  ?' th-on':''}">Client ${sa('name')}</th>
+        <th onclick="setSort('status')"class="th-sort${sCol==='status'?' th-on':''}">Status ${sa('status')}</th>
+        <th>Assigned</th>
+        <th onclick="setSort('due')"   class="th-sort${sCol==='due'   ?' th-on':''}">Next Due ${sa('due')}</th>
+        <th onclick="setSort('cycle')" class="th-sort${sCol==='cycle' ?' th-on':''}" style="width:110px">Cycle ${sa('cycle')}</th>
+        <th>QC</th><th style="width:110px">Plan</th><th>Actions</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
   }
 
   document.getElementById('page').innerHTML = `
     ${alertHtml}
     <div class="page-head">
       <div class="page-title">${titles[fil]||'All Clients'} <em>${list.length} client${list.length!==1?'s':''}</em></div>
+      ${viewToggle}
     </div>
     <div class="toolbar">
       <div class="search-wrap">
         <span class="search-ico">⌕</span>
         <input class="search" placeholder="Search clients…" value="${q}" oninput="doSearch(this.value)">
       </div>
-      <button class="btn btn-line" onclick="exportCSV()">↓ Export CSV</button>
+      ${chipHtml}
+      <button class="btn btn-line" style="margin-left:auto" onclick="exportCSV()">↓ Export CSV</button>
     </div>
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr>
-          <th>#</th>
-          <th onclick="setSort('name')"  class="th-sort${sCol==='name'  ?' th-on':''}">Client ${sa('name')}</th>
-          <th onclick="setSort('status')"class="th-sort${sCol==='status'?' th-on':''}">Status ${sa('status')}</th>
-          <th onclick="setSort('due')"   class="th-sort${sCol==='due'   ?' th-on':''}">Next Due ${sa('due')}</th>
-          <th onclick="setSort('cycle')" class="th-sort${sCol==='cycle' ?' th-on':''}" style="width:120px">Cycle ${sa('cycle')}</th>
-          <th>QC</th><th>Notes</th><th>Actions</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
+    ${mainHtml}`;
 }
 
 // ── FILTER / SEARCH ───────────────────────────────────────────────────
@@ -752,16 +897,20 @@ function setFilter(f,el){
   render();
 }
 function doSearch(v){ q=v; render(); }
+function setView(v){ view=v; render(); }
+function setAssigneeFilter(id){ filterAssignee=filterAssignee===id?null:id; render(); }
 function setSort(col){ sCol===col?sDir*=-1:(sCol=col,sDir=1); render(); }
 function sa(col){ return `<span style="opacity:${sCol===col?1:0.25};font-size:0.6rem">${sCol===col&&sDir===-1?'↓':'↑'}</span>`; }
 function exportCSV(){
-  const h=['Name','Industry','Status','Next Due','Days Left','Cycle %','Revisions','Notes'];
-  const r=clients.map(c=>[
-    `"${c.name}"`,`"${c.tag||''}"`,c.s,
-    nextDue(c).toISOString().split('T')[0],
-    dLeft(c),Math.round(pct(c)),c.rev||0,
-    `"${(c.notes||'').replace(/"/g,'""')}"`
-  ].join(','));
+  const h=['Name','Industry','Status','Assigned To','Next Due','Days Left','Cycle %','Revisions','Items Done','Items Total','Notes'];
+  const r=clients.map(c=>{
+    const m=team.find(x=>x.id===c.assignee);
+    const items=c.items||[];
+    return [`"${c.name}"`,`"${c.tag||''}"`,c.s,m?m.name:'',
+      nextDue(c).toISOString().split('T')[0],dLeft(c),Math.round(pct(c)),c.rev||0,
+      items.filter(x=>x.done).length,items.length,
+      `"${(c.notes||'').replace(/"/g,'""')}"`].join(',');
+  });
   const csv=[h.join(','),...r].join('\n');
   const a=document.createElement('a');
   a.href='data:text/csv,'+encodeURIComponent(csv);
@@ -811,19 +960,27 @@ function del(id){
 }
 
 // ── ADD / EDIT ────────────────────────────────────────────────────────
+function populateAssigneeSelect(currentId){
+  const sel=document.getElementById('f-assignee');
+  sel.innerHTML=`<option value="">— No assignee —</option>`+
+    team.map(m=>`<option value="${m.id}"${m.id===currentId?' selected':''}>${m.name}</option>`).join('');
+}
 function openAdd(){
-  editId=null;
+  editId=null; editItems=[];
   document.getElementById('mt-title').textContent='New Client';
   document.getElementById('mt-sub').textContent='Add a new client to your pipeline.';
   ['f-name','f-tag','f-notes'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('f-status').value='scheduled';
+  populateAssigneeSelect(null);
+  renderItemsModal();
   open_('mClient');
   setTimeout(()=>document.getElementById('f-name').focus(),120);
 }
 function openEdit(id){
   editId=id;
   const c=clients.find(x=>x.id===id);
+  editItems=[...(c.items||[])];
   document.getElementById('mt-title').textContent='Edit Client';
   document.getElementById('mt-sub').textContent=c.name;
   document.getElementById('f-name').value=c.name;
@@ -831,12 +988,17 @@ function openEdit(id){
   document.getElementById('f-date').value=c.last;
   document.getElementById('f-status').value=c.s;
   document.getElementById('f-notes').value=c.notes||'';
+  populateAssigneeSelect(c.assignee||null);
+  renderItemsModal();
   open_('mClient');
 }
 function saveClient(){
   const name=document.getElementById('f-name').value.trim();
   if(!name){ toast('Name is required','red'); return; }
-  const d={name, tag:document.getElementById('f-tag').value.trim(), last:document.getElementById('f-date').value, s:document.getElementById('f-status').value, notes:document.getElementById('f-notes').value.trim()};
+  const assigneeVal=document.getElementById('f-assignee').value;
+  const d={name, tag:document.getElementById('f-tag').value.trim(), last:document.getElementById('f-date').value,
+    s:document.getElementById('f-status').value, notes:document.getElementById('f-notes').value.trim(),
+    assignee:assigneeVal?parseInt(assigneeVal):null, items:[...editItems]};
   if(editId) Object.assign(clients.find(x=>x.id===editId),d);
   else clients.push({id:nid++,...d,qc:[],qn:'',rev:0});
   save(); close_('mClient'); render();
@@ -883,6 +1045,57 @@ function rejectClient(){
   save(); close_('mReview'); render();
   toast(`${c.name} — revisions requested`,'red');
 }
+
+// ── TEAM ──────────────────────────────────────────────────────────────
+function renderTeamList(){
+  const el=document.getElementById('team-list');
+  if(!el) return;
+  if(!team.length){ el.innerHTML=`<div style="color:var(--gray2);font-size:0.8rem;padding:8px 0">No team members yet.</div>`; return; }
+  el.innerHTML=team.map(m=>`<div class="team-row">
+    <span class="avatar" style="background:${m.color};width:28px;height:28px;font-size:0.75rem">${m.name[0]}</span>
+    <span style="flex:1;font-size:0.85rem;color:var(--black)">${m.name}</span>
+    <button class="item-del" onclick="removeMember(${m.id})">✕</button>
+  </div>`).join('');
+}
+function addMember(){
+  const inp=document.getElementById('t-name');
+  const name=inp.value.trim(); if(!name) return;
+  const id=Math.max(0,...team.map(m=>m.id))+1;
+  team.push({id, name, color:COLORS[team.length%COLORS.length]});
+  saveTeam(); inp.value=''; renderTeamList(); render();
+  toast(`${name} added to team`,'teal');
+}
+function removeMember(id){
+  const m=team.find(x=>x.id===id);
+  team=team.filter(x=>x.id!==id);
+  clients.forEach(c=>{if(c.assignee===id)c.assignee=null;});
+  saveTeam(); save(); renderTeamList(); render();
+  toast(`${m.name} removed`,'red');
+}
+document.addEventListener('DOMContentLoaded',()=>{ renderTeamList(); });
+
+// ── CONTENT ITEMS ─────────────────────────────────────────────────────
+function renderItemsModal(){
+  const el=document.getElementById('items-list-modal'); if(!el) return;
+  if(!editItems.length){ el.innerHTML=`<div style="color:var(--gray2);font-size:0.78rem;padding:10px;text-align:center">No content items yet — add one below.</div>`; return; }
+  el.innerHTML=editItems.map((it,i)=>`<div class="item-row">
+    <div class="item-check${it.done?' on':''}" onclick="toggleItem(${i})">${it.done?'✓':''}</div>
+    <span class="item-title">${it.title}</span>
+    <span class="item-meta">${it.type} · ${it.platform}</span>
+    <button class="item-del" onclick="removeItem(${i})">✕</button>
+  </div>`).join('');
+}
+function addItem(){
+  const title=document.getElementById('i-title').value.trim(); if(!title) return;
+  const type=document.getElementById('i-type').value;
+  const platform=document.getElementById('i-plat').value;
+  const id=Math.max(0,...editItems.map(x=>x.id||0))+1;
+  editItems.push({id, title, type, platform, done:false});
+  document.getElementById('i-title').value='';
+  renderItemsModal();
+}
+function removeItem(i){ editItems.splice(i,1); renderItemsModal(); }
+function toggleItem(i){ editItems[i].done=!editItems[i].done; renderItemsModal(); }
 
 // ── MODAL HELPERS ─────────────────────────────────────────────────────
 function open_(id){ document.getElementById(id).classList.add('open'); }
