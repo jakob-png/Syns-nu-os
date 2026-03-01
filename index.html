@@ -10,27 +10,27 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --white:   #0f1117;
-  --off:     #161920;
-  --off2:    #1a1d26;
-  --line:    rgba(255,255,255,0.07);
-  --line2:   rgba(255,255,255,0.12);
-  --black:   #f0f0f5;
-  --gray:    #8e8ea0;
-  --gray2:   #55556a;
-  --teal:    #00C9B8;
-  --teal-lt: rgba(0,201,184,0.12);
-  --teal-md: rgba(0,201,184,0.18);
-  --sky:     #5AC8FA;
-  --sky-lt:  rgba(90,200,250,0.12);
-  --sky-md:  rgba(90,200,250,0.18);
-  --orange:  #bf7fff;
-  --orng-lt: rgba(191,127,255,0.12);
-  --orng-md: rgba(191,127,255,0.18);
-  --red:     #FF453A;
-  --red-lt:  rgba(255,69,58,0.12);
-  --green:   #30D158;
-  --grn-lt:  rgba(48,209,88,0.12);
+  --white:   #ffffff;
+  --off:     #f9fafb;
+  --off2:    #f3f4f6;
+  --line:    rgba(0,0,0,0.06);
+  --line2:   rgba(0,0,0,0.10);
+  --black:   #111827;
+  --gray:    #6b7280;
+  --gray2:   #9ca3af;
+  --teal:    #0d9488;
+  --teal-lt: rgba(13,148,136,0.08);
+  --teal-md: rgba(13,148,136,0.14);
+  --sky:     #0284c7;
+  --sky-lt:  rgba(2,132,199,0.08);
+  --sky-md:  rgba(2,132,199,0.14);
+  --orange:  #7c3aed;
+  --orng-lt: rgba(124,58,237,0.08);
+  --orng-md: rgba(124,58,237,0.14);
+  --red:     #dc2626;
+  --red-lt:  rgba(220,38,38,0.08);
+  --green:   #059669;
+  --grn-lt:  rgba(5,150,105,0.08);
   --sans:    'Figtree', -apple-system, sans-serif;
   --serif:   'Playfair Display', Georgia, serif;
   --r:       10px;
@@ -40,14 +40,12 @@
 
 html{font-size:15px;-webkit-font-smoothing:antialiased}
 body{background:var(--white);color:var(--black);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;top:-20%;left:-10%;width:55vw;height:55vw;background:radial-gradient(circle,rgba(0,201,184,0.04) 0%,transparent 65%);pointer-events:none;z-index:0}
-body::after{content:'';position:fixed;bottom:-15%;right:-5%;width:45vw;height:45vw;background:radial-gradient(circle,rgba(191,127,255,0.05) 0%,transparent 65%);pointer-events:none;z-index:0}
 
 /* ── HEADER ────────────────────────────────────────────────────────── */
 header{
   display:flex;align-items:center;
   height:56px;padding:0 32px;
-  background:rgba(15,17,23,0.85);
+  background:rgba(255,255,255,0.92);
   backdrop-filter:blur(24px) saturate(1.6);
   -webkit-backdrop-filter:blur(24px) saturate(1.6);
   border-bottom:1px solid var(--line);
@@ -287,8 +285,8 @@ td:first-child{text-align:center}
   transition:all 0.14s;white-space:nowrap;
   letter-spacing:0.1px;
 }
-.btn-black{background:var(--black);color:#0f1117;border-color:var(--black)}
-.btn-black:hover{background:#d0d0dc;transform:translateY(-1px);box-shadow:0 4px 14px rgba(240,240,245,0.15)}
+.btn-black{background:#111827;color:#ffffff;border-color:#111827}
+.btn-black:hover{background:#1f2937;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
 .btn-line{background:transparent;color:var(--gray);border-color:var(--line2)}
 .btn-line:hover{background:var(--off2);border-color:var(--gray2);color:var(--black)}
 .btn-teal{background:var(--teal-lt);color:var(--teal);border-color:rgba(0,201,184,0.25)}
@@ -315,8 +313,8 @@ td:first-child{text-align:center}
 /* ── MODALS ──────────────────────────────────────────────────────────── */
 .overlay{
   position:fixed;inset:0;
-  background:rgba(0,0,0,0.3);
-  backdrop-filter:blur(8px) saturate(1.5);
+  background:rgba(0,0,0,0.15);
+  backdrop-filter:blur(8px) saturate(1.2);
   z-index:500;display:none;
   align-items:center;justify-content:center;padding:20px;
 }
@@ -327,7 +325,7 @@ td:first-child{text-align:center}
   border:1px solid var(--line2);
   border-radius:var(--r-lg);
   padding:28px;width:500px;max-width:100%;
-  box-shadow:0 24px 64px rgba(0,0,0,0.5),0 4px 16px rgba(0,0,0,0.3);
+  box-shadow:0 8px 32px rgba(0,0,0,0.10),0 1px 4px rgba(0,0,0,0.05);
   animation:mIn 0.2s cubic-bezier(0.34,1.56,0.64,1);
 }
 .modal-lg{width:580px}
@@ -415,7 +413,7 @@ td:first-child{text-align:center}
   border:1px solid var(--line2);
   border-radius:var(--r);
   font-size:0.8rem;font-weight:500;
-  box-shadow:0 8px 24px rgba(0,0,0,0.5);
+  box-shadow:0 4px 16px rgba(0,0,0,0.08);
   animation:tIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
   min-width:220px;max-width:320px;pointer-events:all;
 }
@@ -454,7 +452,7 @@ td:first-child{text-align:center}
 /* ── VIEW TOGGLE ─────────────────────────────────────────────────────── */
 .view-toggle{display:flex;gap:3px;background:var(--off2);border-radius:20px;padding:3px}
 .vt-btn{font-family:var(--sans);font-size:0.75rem;font-weight:600;padding:5px 12px;border-radius:17px;border:none;cursor:pointer;transition:all 0.14s;color:var(--gray2);background:transparent}
-.vt-btn.on{background:var(--off);color:var(--black);box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.vt-btn.on{background:var(--white);color:var(--black);box-shadow:0 1px 4px rgba(0,0,0,0.10)}
 .filter-chips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .fchip{display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:600;padding:4px 10px 4px 5px;border-radius:20px;background:var(--off2);border:1px solid var(--line2);cursor:pointer;transition:all 0.15s;color:var(--gray)}
 .fchip:hover{border-color:var(--teal);color:var(--teal)}
@@ -468,10 +466,10 @@ td:first-child{text-align:center}
   <a class="logo" href="#">
     <div class="logo-icon">
       <svg viewBox="0 0 14 14" fill="none">
-        <rect x="1" y="1" width="5" height="5" rx="1.2" fill="#0f1117"/>
-        <rect x="8" y="1" width="5" height="5" rx="1.2" fill="#0f1117"/>
-        <rect x="1" y="8" width="5" height="5" rx="1.2" fill="#0f1117"/>
-        <rect x="8" y="8" width="5" height="5" rx="1.2" fill="#0f1117" opacity=".35"/>
+        <rect x="1" y="1" width="5" height="5" rx="1.2" fill="#ffffff"/>
+        <rect x="8" y="1" width="5" height="5" rx="1.2" fill="#ffffff"/>
+        <rect x="1" y="8" width="5" height="5" rx="1.2" fill="#ffffff"/>
+        <rect x="8" y="8" width="5" height="5" rx="1.2" fill="#ffffff" opacity=".35"/>
       </svg>
     </div>
     <span class="logo-text">Content<em>Flow</em></span>
