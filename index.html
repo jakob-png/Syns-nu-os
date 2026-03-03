@@ -722,19 +722,19 @@ td:first-child{text-align:center}
 
 <!-- CARD EDIT MODAL -->
 <div class="overlay" id="mCardEdit">
-  <div class="modal" style="width:440px">
-    <div class="modal-hd">
+  <div class="modal" style="width:55vw;max-width:900px;min-width:420px;height:55vh;min-height:400px;display:flex;flex-direction:column;padding:28px">
+    <div class="modal-hd" style="margin-bottom:16px">
       <div class="modal-title" id="ce-modal-title">Edit Card</div>
     </div>
-    <div class="fg" style="margin-bottom:12px">
+    <div class="fg" style="margin-bottom:14px">
       <label class="flbl">Video name</label>
       <input class="finp" id="ce-title" placeholder="e.g. Morning routine reel…">
     </div>
-    <div class="fg" style="margin-bottom:4px">
+    <div class="fg" style="flex:1;display:flex;flex-direction:column;margin-bottom:4px">
       <label class="flbl">Notes</label>
-      <textarea class="finp" id="ce-notes" placeholder="Hook, kameravinklar, script, idéer…" rows="6" style="resize:vertical"></textarea>
+      <textarea class="finp" id="ce-notes" placeholder="Hook, kameravinklar, script, idéer…" style="flex:1;resize:none"></textarea>
     </div>
-    <div class="modal-ft">
+    <div class="modal-ft" style="margin-top:18px">
       <button class="btn btn-red" id="ce-del-btn">✕ Delete</button>
       <button class="btn btn-line" onclick="close_('mCardEdit')">Cancel</button>
       <button class="btn btn-black" onclick="saveCard()">Save</button>
