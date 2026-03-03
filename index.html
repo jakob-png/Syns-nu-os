@@ -727,20 +727,12 @@ td:first-child{text-align:center}
       <div class="modal-title" id="ce-modal-title">Edit Card</div>
     </div>
     <div class="fg" style="margin-bottom:12px">
-      <label class="flbl">Title</label>
-      <input class="finp" id="ce-title" placeholder="Content title…">
-    </div>
-    <div class="fg" style="margin-bottom:12px">
-      <label class="flbl">Hook</label>
-      <input class="finp" id="ce-hook" placeholder="Opening hook…">
-    </div>
-    <div class="fg" style="margin-bottom:12px">
-      <label class="flbl">Camera Angles</label>
-      <input class="finp" id="ce-kamera" placeholder="e.g. Close-up, Wide shot…">
+      <label class="flbl">Video name</label>
+      <input class="finp" id="ce-title" placeholder="e.g. Morning routine reel…">
     </div>
     <div class="fg" style="margin-bottom:4px">
       <label class="flbl">Notes</label>
-      <textarea class="finp" id="ce-notes" placeholder="Additional notes…" rows="3" style="resize:vertical"></textarea>
+      <textarea class="finp" id="ce-notes" placeholder="Hook, kameravinklar, script, idéer…" rows="6" style="resize:vertical"></textarea>
     </div>
     <div class="modal-ft">
       <button class="btn btn-red" id="ce-del-btn">✕ Delete</button>
@@ -1269,8 +1261,7 @@ function renderBoardModal(){
            onclick="openCardEdit(${col.id},${card.id})"
            ondragstart="kbDragStart(event,${col.id},${card.id})">
         <div class="kb-card-title">${esc(card.title||'Untitled')}</div>
-        ${card.hook?`<div class="kb-card-hook">${esc(card.hook)}</div>`:''}
-        ${card.kameraVinklar?`<div class="kb-card-tags"><span class="kb-tag">${esc(card.kameraVinklar)}</span></div>`:''}
+        ${card.notes?`<div class="kb-card-hook">${esc(card.notes.substring(0,60))}${card.notes.length>60?'…':''}</div>`:''}
       </div>`).join('');
 
     html+=`<div class="kb-col">
@@ -1369,8 +1360,6 @@ function openCardEdit(colId,cardId){
   ceColId=colId; ceCardId=cardId;
   document.getElementById('ce-modal-title').textContent=col.label;
   document.getElementById('ce-title').value=card.title||'';
-  document.getElementById('ce-hook').value=card.hook||'';
-  document.getElementById('ce-kamera').value=card.kameraVinklar||'';
   document.getElementById('ce-notes').value=card.notes||'';
   document.getElementById('ce-del-btn').onclick=()=>delCard(colId,cardId);
   open_('mCardEdit');
@@ -1382,8 +1371,6 @@ function saveCard(){
   const card=col&&col.cards.find(x=>x.id===ceCardId);
   if(!card) return;
   card.title=document.getElementById('ce-title').value.trim()||'Untitled';
-  card.hook=document.getElementById('ce-hook').value.trim();
-  card.kameraVinklar=document.getElementById('ce-kamera').value.trim();
   card.notes=document.getElementById('ce-notes').value.trim();
   save(); close_('mCardEdit'); renderBoardModal();
   toast('Card saved','teal');
