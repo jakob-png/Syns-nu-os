@@ -10,89 +10,89 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --white:   #ffffff;
-  --off:     #f9fafb;
-  --off2:    #f3f4f6;
-  --line:    rgba(0,0,0,0.06);
-  --line2:   rgba(0,0,0,0.10);
-  --black:   #111827;
-  --gray:    #6b7280;
-  --gray2:   #9ca3af;
-  --teal:    #0d9488;
-  --teal-lt: rgba(13,148,136,0.08);
-  --teal-md: rgba(13,148,136,0.14);
-  --sky:     #0284c7;
-  --sky-lt:  rgba(2,132,199,0.08);
-  --sky-md:  rgba(2,132,199,0.14);
-  --orange:  #7c3aed;
-  --orng-lt: rgba(124,58,237,0.08);
-  --orng-md: rgba(124,58,237,0.14);
-  --red:     #dc2626;
-  --red-lt:  rgba(220,38,38,0.08);
-  --green:   #059669;
-  --grn-lt:  rgba(5,150,105,0.08);
-  --sans:    'Inter', -apple-system, sans-serif;
-  --serif:   'Inter', -apple-system, sans-serif;
-  --r:       10px;
-  --r-sm:    7px;
-  --r-lg:    16px;
+  --white:   #212121;
+  --off:     #2f2f2f;
+  --off2:    #383838;
+  --line:    #3f3f3f;
+  --line2:   #4a4a4a;
+  --black:   #ececec;
+  --gray:    #8e8ea0;
+  --gray2:   #6b6b80;
+  --teal:    #10a37f;
+  --teal-lt: rgba(16,163,127,0.15);
+  --teal-md: rgba(16,163,127,0.25);
+  --sky:     #3b9edd;
+  --sky-lt:  rgba(59,158,221,0.12);
+  --sky-md:  rgba(59,158,221,0.20);
+  --orange:  #9b6dff;
+  --orng-lt: rgba(155,109,255,0.12);
+  --orng-md: rgba(155,109,255,0.20);
+  --red:     #ef4444;
+  --red-lt:  rgba(239,68,68,0.12);
+  --green:   #10a37f;
+  --grn-lt:  rgba(16,163,127,0.12);
+  --sans:    'Söhne','Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --serif:   'Söhne','Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --r:       8px;
+  --r-sm:    6px;
+  --r-lg:    12px;
 }
 
-html{font-size:15px;-webkit-font-smoothing:antialiased}
-body{background:var(--white);color:var(--black);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+html{font-size:14px;-webkit-font-smoothing:antialiased}
+body{background:var(--white);color:var(--black);font-family:var(--sans);height:100vh;overflow:hidden;line-height:1.6}
 
-/* ── HEADER ────────────────────────────────────────────────────────── */
-header{
-  display:flex;align-items:center;
-  height:56px;padding:0 32px;
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(24px) saturate(1.6);
-  -webkit-backdrop-filter:blur(24px) saturate(1.6);
+/* ── APP SHELL ──────────────────────────────────────────────────────── */
+.app-shell{display:flex;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ────────────────────────────────────────────────────────── */
+.sidebar{
+  width:260px;flex-shrink:0;
+  background:#171717;
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;
+  height:100vh;overflow-y:auto;overflow-x:hidden;
+  transition:width 200ms ease;
+}
+.sidebar.collapsed{width:0}
+.sb-top{
+  padding:16px;
   border-bottom:1px solid var(--line);
-  position:sticky;top:0;z-index:200;
-  gap:0;
-}
-
-.logo{
-  display:flex;align-items:center;gap:9px;
-  margin-right:36px;flex-shrink:0;text-decoration:none;
-}
-.logo-icon{
-  width:28px;height:28px;
-  background:var(--teal);
-  border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;align-items:center;gap:10px;
   flex-shrink:0;
 }
+.logo{display:flex;align-items:center;gap:9px;flex-shrink:0;text-decoration:none;min-width:0}
+.logo-icon{
+  width:28px;height:28px;background:var(--teal);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
 .logo-icon svg{width:14px;height:14px}
-.logo-text{
-  font-family:var(--serif);
-  font-size:1.15rem;
-  color:var(--black);
-  letter-spacing:-0.2px;
-  font-weight:700;
-}
-.logo-text em{font-style:italic;color:var(--teal)}
+.logo-text{font-family:var(--serif);font-size:1.05rem;color:var(--black);font-weight:700;white-space:nowrap}
+.logo-text em{font-style:normal;color:var(--teal)}
 
-.header-nav{display:flex;gap:0;flex:1}
-.hn-item{
-  display:flex;align-items:center;gap:6px;
-  padding:6px 14px;
-  border-radius:20px;
-  font-size:0.8rem;font-weight:500;
-  color:var(--gray);cursor:pointer;
-  transition:all 0.15s;
-  border:none;background:none;
+.sb-new-btn{
+  margin:12px 10px 4px;width:calc(100% - 20px);
+  justify-content:center;background:var(--teal);color:#fff;
+  border-color:var(--teal);border-radius:var(--r);padding:9px 16px;font-size:0.82rem;
+}
+.sb-new-btn:hover{background:#0e8f6f;transform:none;box-shadow:0 0 0 3px var(--teal-lt)}
+
+.sb-nav{padding:8px;flex:1}
+.sb-nav-label{
+  font-size:0.65rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.8px;color:var(--gray2);padding:8px 10px 4px;
+}
+.sb-item{
+  display:flex;align-items:center;width:100%;padding:8px 10px;
+  border-radius:var(--r);font-size:0.82rem;font-weight:500;
+  color:var(--gray);cursor:pointer;transition:all 0.15s;
+  border:none;background:none;font-family:var(--sans);gap:8px;text-align:left;
   white-space:nowrap;
-  font-family:var(--sans);
 }
-.hn-item:hover{color:var(--black);background:var(--off2)}
-.hn-item.active{color:var(--black);background:var(--off2);font-weight:600}
-
-.hn-badge{
-  font-size:0.65rem;font-weight:700;
-  padding:1px 6px;border-radius:20px;
-  min-width:18px;text-align:center;
+.sb-item:hover{color:var(--black);background:var(--off)}
+.sb-item.active{color:var(--black);background:var(--off2)}
+.sb-badge{
+  margin-left:auto;font-size:0.65rem;font-weight:700;
+  padding:1px 6px;border-radius:20px;min-width:18px;text-align:center;
 }
 .nb-red   {background:var(--red-lt);  color:var(--red)}
 .nb-orange{background:var(--orng-lt); color:var(--orange)}
@@ -100,7 +100,29 @@ header{
 .nb-teal  {background:var(--teal-lt); color:var(--teal)}
 .nb-gray  {background:var(--off2);    color:var(--gray)}
 
-.header-right{margin-left:auto;display:flex;gap:10px;align-items:center}
+.sb-team-section{border-top:1px solid var(--line);padding:10px 8px;flex-shrink:0}
+.sb-team-label{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--gray2);padding:2px 10px 8px}
+
+/* ── TOPBAR ─────────────────────────────────────────────────────────── */
+.main-area{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh;overflow-y:auto}
+.topbar{
+  height:52px;padding:0 24px;
+  background:rgba(33,33,33,0.95);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;gap:10px;
+  flex-shrink:0;
+}
+.hamburger{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  border-radius:6px;border:none;background:transparent;
+  color:var(--gray);cursor:pointer;transition:all 0.15s;flex-shrink:0;
+}
+.hamburger:hover{color:var(--black);background:var(--off)}
+.topbar-title{font-weight:600;font-size:0.9rem;color:var(--black);flex:1}
+.topbar-right{margin-left:auto;display:flex;gap:8px;align-items:center}
 
 /* ── KPI BAND ───────────────────────────────────────────────────────── */
 .kpi-band{
@@ -285,8 +307,8 @@ td:first-child{text-align:center}
   transition:all 0.14s;white-space:nowrap;
   letter-spacing:0.1px;
 }
-.btn-black{background:#111827;color:#ffffff;border-color:#111827}
-.btn-black:hover{background:#1f2937;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.btn-black{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn-black:hover{background:#0e8f6f;transform:none;box-shadow:0 0 0 3px var(--teal-lt)}
 .btn-line{background:transparent;color:var(--gray);border-color:var(--line2)}
 .btn-line:hover{background:var(--off2);border-color:var(--gray2);color:var(--black)}
 .btn-teal{background:var(--teal-lt);color:var(--teal);border-color:rgba(0,201,184,0.25)}
@@ -313,8 +335,8 @@ td:first-child{text-align:center}
 /* ── MODALS ──────────────────────────────────────────────────────────── */
 .overlay{
   position:fixed;inset:0;
-  background:rgba(0,0,0,0.15);
-  backdrop-filter:blur(8px) saturate(1.2);
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(8px);
   z-index:500;display:none;
   align-items:center;justify-content:center;padding:20px;
 }
@@ -325,7 +347,7 @@ td:first-child{text-align:center}
   border:1px solid var(--line2);
   border-radius:var(--r-lg);
   padding:28px;width:500px;max-width:100%;
-  box-shadow:0 8px 32px rgba(0,0,0,0.10),0 1px 4px rgba(0,0,0,0.05);
+  box-shadow:0 16px 48px rgba(0,0,0,0.5),0 2px 8px rgba(0,0,0,0.3);
   animation:mIn 0.2s cubic-bezier(0.34,1.56,0.64,1);
 }
 .modal-lg{width:580px}
@@ -413,7 +435,7 @@ td:first-child{text-align:center}
   border:1px solid var(--line2);
   border-radius:var(--r);
   font-size:0.8rem;font-weight:500;
-  box-shadow:0 4px 16px rgba(0,0,0,0.08);
+  box-shadow:0 8px 24px rgba(0,0,0,0.5);
   animation:tIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
   min-width:220px;max-width:320px;pointer-events:all;
 }
@@ -452,7 +474,7 @@ td:first-child{text-align:center}
 /* ── VIEW TOGGLE ─────────────────────────────────────────────────────── */
 .view-toggle{display:flex;gap:3px;background:var(--off2);border-radius:20px;padding:3px}
 .vt-btn{font-family:var(--sans);font-size:0.75rem;font-weight:600;padding:5px 12px;border-radius:17px;border:none;cursor:pointer;transition:all 0.14s;color:var(--gray2);background:transparent}
-.vt-btn.on{background:var(--white);color:var(--black);box-shadow:0 1px 4px rgba(0,0,0,0.10)}
+.vt-btn.on{background:var(--off2);color:var(--black);box-shadow:0 1px 4px rgba(0,0,0,0.3)}
 .filter-chips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .fchip{display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:600;padding:4px 10px 4px 5px;border-radius:20px;background:var(--off2);border:1px solid var(--line2);cursor:pointer;transition:all 0.15s;color:var(--gray)}
 .fchip:hover{border-color:var(--teal);color:var(--teal)}
@@ -460,56 +482,75 @@ td:first-child{text-align:center}
 </style>
 </head>
 <body>
+<div class="app-shell">
 
-<!-- HEADER -->
-<header>
-  <a class="logo" href="#">
-    <div class="logo-icon">
-      <svg viewBox="0 0 14 14" fill="none">
-        <rect x="1" y="1" width="5" height="5" rx="1.2" fill="#ffffff"/>
-        <rect x="8" y="1" width="5" height="5" rx="1.2" fill="#ffffff"/>
-        <rect x="1" y="8" width="5" height="5" rx="1.2" fill="#ffffff"/>
-        <rect x="8" y="8" width="5" height="5" rx="1.2" fill="#ffffff" opacity=".35"/>
-      </svg>
-    </div>
-    <span class="logo-text">Content<em>Flow</em></span>
-  </a>
-
-  <nav class="header-nav" id="headerNav">
-    <button class="hn-item active" onclick="setFilter('all',this)" data-f="all">
-      All <span class="hn-badge nb-gray" id="nc-all">0</span>
-    </button>
-    <button class="hn-item" onclick="setFilter('overdue',this)" data-f="overdue">
-      Overdue <span class="hn-badge nb-red" id="nc-overdue">0</span>
-    </button>
-    <button class="hn-item" onclick="setFilter('upcoming',this)" data-f="upcoming">
-      Due Soon <span class="hn-badge nb-orange" id="nc-upcoming">0</span>
-    </button>
-    <button class="hn-item" onclick="setFilter('inprogress',this)" data-f="inprogress">
-      In Progress <span class="hn-badge nb-sky" id="nc-inprogress">0</span>
-    </button>
-    <button class="hn-item" onclick="setFilter('review',this)" data-f="review">
-      Review <span class="hn-badge nb-teal" id="nc-review">0</span>
-    </button>
-    <button class="hn-item" onclick="setFilter('delivered',this)" data-f="delivered">
-      Delivered <span class="hn-badge nb-gray" id="nc-delivered">0</span>
-    </button>
-  </nav>
-
-  <div class="header-right">
-    <button class="btn btn-line" onclick="open_('mTeam');renderTeamList()">⚇ Team</button>
-    <button class="btn btn-black" onclick="openAdd()">
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg>
-      Add Client
-    </button>
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-top">
+    <a class="logo" href="#">
+      <div class="logo-icon">
+        <svg viewBox="0 0 14 14" fill="none">
+          <rect x="1" y="1" width="5" height="5" rx="1.2" fill="#ffffff"/>
+          <rect x="8" y="1" width="5" height="5" rx="1.2" fill="#ffffff"/>
+          <rect x="1" y="8" width="5" height="5" rx="1.2" fill="#ffffff"/>
+          <rect x="8" y="8" width="5" height="5" rx="1.2" fill="#ffffff" opacity=".35"/>
+        </svg>
+      </div>
+      <span class="logo-text">Content<em>Flow</em></span>
+    </a>
   </div>
-</header>
+  <button class="btn sb-new-btn" onclick="openAdd()">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg>
+    New Client
+  </button>
+  <nav class="sb-nav" id="headerNav">
+    <div class="sb-nav-label">Views</div>
+    <button class="sb-item active" onclick="setFilter('all')" data-f="all">
+      All <span class="sb-badge nb-gray" id="nc-all">0</span>
+    </button>
+    <button class="sb-item" onclick="setFilter('overdue')" data-f="overdue">
+      Overdue <span class="sb-badge nb-red" id="nc-overdue">0</span>
+    </button>
+    <button class="sb-item" onclick="setFilter('upcoming')" data-f="upcoming">
+      Due Soon <span class="sb-badge nb-orange" id="nc-upcoming">0</span>
+    </button>
+    <button class="sb-item" onclick="setFilter('inprogress')" data-f="inprogress">
+      In Progress <span class="sb-badge nb-sky" id="nc-inprogress">0</span>
+    </button>
+    <button class="sb-item" onclick="setFilter('review')" data-f="review">
+      Review <span class="sb-badge nb-teal" id="nc-review">0</span>
+    </button>
+    <button class="sb-item" onclick="setFilter('delivered')" data-f="delivered">
+      Delivered <span class="sb-badge nb-gray" id="nc-delivered">0</span>
+    </button>
+    <div style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px">
+      <div class="sb-nav-label">Settings</div>
+      <button class="sb-item" onclick="open_('mTeam');renderTeamList()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="4" r="2.5"/><path d="M1 11c0-2.2 1.8-4 4-4s4 1.8 4 4"/><circle cx="10" cy="4" r="1.8"/><path d="M12 10.5c0-1.5-1-2.7-2.3-3"/></svg>
+        Team
+      </button>
+    </div>
+  </nav>
+  <div class="sb-team-section" id="sb-team-section"></div>
+</aside>
 
-<!-- KPI BAND -->
-<div class="kpi-band" id="kpiBand"></div>
+<!-- MAIN AREA -->
+<div class="main-area">
+  <header class="topbar">
+    <button class="hamburger" onclick="toggleSidebar()" title="Toggle sidebar">
+      <svg width="15" height="12" viewBox="0 0 15 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <line x1="0" y1="1" x2="15" y2="1"/><line x1="0" y1="6" x2="15" y2="6"/><line x1="0" y1="11" x2="15" y2="11"/>
+      </svg>
+    </button>
+    <div class="topbar-right" id="topbar-right"></div>
+  </header>
 
-<!-- PAGE -->
-<div class="page" id="page"></div>
+  <!-- KPI BAND -->
+  <div class="kpi-band" id="kpiBand"></div>
+
+  <!-- PAGE -->
+  <div class="page" id="page"></div>
+</div><!-- end .main-area -->
 
 <!-- CLIENT MODAL -->
 <div class="overlay" id="mClient">
@@ -620,6 +661,8 @@ td:first-child{text-align:center}
 
 <!-- TOASTS -->
 <div class="toasts" id="toasts"></div>
+
+</div><!-- end .app-shell -->
 
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────
@@ -794,19 +837,12 @@ function render(){
     </div>`;
   }
 
-  // Team filter chips
-  const chipHtml = team.length ? `<div class="filter-chips">
-    ${team.map(m=>`<span class="fchip${filterAssignee===m.id?' active':''}" onclick="setAssigneeFilter(${m.id})">
-      <span class="avatar" style="background:${m.color};width:18px;height:18px;font-size:0.55rem">${m.name[0]}</span>${m.name}
-    </span>`).join('')}
-    ${filterAssignee?`<button class="btn btn-ico" style="font-size:0.7rem;padding:3px 8px" onclick="setAssigneeFilter(null)">✕ Clear</button>`:''}
-  </div>` : '';
-
-  // View toggle
-  const viewToggle=`<div class="view-toggle">
+  // View toggle → topbar-right
+  document.getElementById('topbar-right').innerHTML=`<div class="view-toggle">
     <button class="vt-btn${view==='table'?' on':''}" onclick="setView('table')">☰ Table</button>
     <button class="vt-btn${view==='board'?' on':''}" onclick="setView('board')">⊞ Board</button>
   </div>`;
+  renderSidebarTeam();
 
   let mainHtml='';
   if(view==='board'){
@@ -874,24 +910,23 @@ function render(){
     ${alertHtml}
     <div class="page-head">
       <div class="page-title">${titles[fil]||'All Clients'} <em>${list.length} client${list.length!==1?'s':''}</em></div>
-      ${viewToggle}
     </div>
     <div class="toolbar">
       <div class="search-wrap">
         <span class="search-ico">⌕</span>
         <input class="search" placeholder="Search clients…" value="${q}" oninput="doSearch(this.value)">
       </div>
-      ${chipHtml}
       <button class="btn btn-line" style="margin-left:auto" onclick="exportCSV()">↓ Export CSV</button>
     </div>
     ${mainHtml}`;
 }
 
 // ── FILTER / SEARCH ───────────────────────────────────────────────────
-function setFilter(f,el){
+function setFilter(f){
   fil=f;
-  document.querySelectorAll('.hn-item').forEach(x=>x.classList.remove('active'));
-  el.classList.add('active');
+  document.querySelectorAll('.sb-item[data-f]').forEach(x=>x.classList.remove('active'));
+  const t=document.querySelector(`[data-f="${f}"]`);
+  if(t) t.classList.add('active');
   render();
 }
 function doSearch(v){ q=v; render(); }
@@ -1094,6 +1129,21 @@ function addItem(){
 }
 function removeItem(i){ editItems.splice(i,1); renderItemsModal(); }
 function toggleItem(i){ editItems[i].done=!editItems[i].done; renderItemsModal(); }
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+function renderSidebarTeam(){
+  const el=document.getElementById('sb-team-section');
+  if(!el) return;
+  if(!team.length){ el.innerHTML=''; return; }
+  el.innerHTML=`<div class="sb-team-label">Filter by assignee</div>`+
+    team.map(m=>`<button class="sb-item${filterAssignee===m.id?' active':''}" onclick="setAssigneeFilter(${m.id})">
+      <span class="avatar" style="background:${m.color};width:18px;height:18px;font-size:0.55rem">${m.name[0]}</span>${m.name}
+    </button>`).join('')+
+    (filterAssignee?`<button class="sb-item" onclick="setAssigneeFilter(null)" style="font-size:0.75rem">✕ Clear filter</button>`:'');
+}
 
 // ── MODAL HELPERS ─────────────────────────────────────────────────────
 function open_(id){ document.getElementById(id).classList.add('open'); }
