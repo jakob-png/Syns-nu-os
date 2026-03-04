@@ -10,32 +10,54 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --white:   #212121;
-  --off:     #2f2f2f;
-  --off2:    #383838;
-  --line:    #3f3f3f;
-  --line2:   #4a4a4a;
-  --black:   #ececec;
-  --gray:    #8e8ea0;
-  --gray2:   #6b6b80;
-  --teal:    #10a37f;
-  --teal-lt: rgba(16,163,127,0.15);
-  --teal-md: rgba(16,163,127,0.25);
-  --sky:     #3b9edd;
-  --sky-lt:  rgba(59,158,221,0.12);
-  --sky-md:  rgba(59,158,221,0.20);
-  --orange:  #9b6dff;
-  --orng-lt: rgba(155,109,255,0.12);
-  --orng-md: rgba(155,109,255,0.20);
-  --red:     #ef4444;
-  --red-lt:  rgba(239,68,68,0.12);
-  --green:   #10a37f;
-  --grn-lt:  rgba(16,163,127,0.12);
-  --sans:    'Söhne','Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
-  --serif:   'Söhne','Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
-  --r:       8px;
-  --r-sm:    6px;
-  --r-lg:    12px;
+  --white:      #212121;
+  --off:        #2f2f2f;
+  --off2:       #383838;
+  --line:       #3f3f3f;
+  --line2:      #4a4a4a;
+  --black:      #ececec;
+  --gray:       #8e8ea0;
+  --gray2:      #6b6b80;
+  --teal:       #10a37f;
+  --teal-lt:    rgba(16,163,127,0.15);
+  --teal-md:    rgba(16,163,127,0.25);
+  --sky:        #3b9edd;
+  --sky-lt:     rgba(59,158,221,0.12);
+  --sky-md:     rgba(59,158,221,0.20);
+  --orange:     #9b6dff;
+  --orng-lt:    rgba(155,109,255,0.12);
+  --orng-md:    rgba(155,109,255,0.20);
+  --red:        #ef4444;
+  --red-lt:     rgba(239,68,68,0.12);
+  --green:      #10a37f;
+  --grn-lt:     rgba(16,163,127,0.12);
+  --sans:       'Söhne','Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --serif:      'Söhne','Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --r:          8px;
+  --r-sm:       6px;
+  --r-lg:       12px;
+  --sidebar-bg: #171717;
+  --topbar-bg:  rgba(33,33,33,0.95);
+}
+
+/* ── LIGHT THEME ─────────────────────────────────────────────────────── */
+html.light{
+  --white:      #ffffff;
+  --off:        #f5f5f5;
+  --off2:       #ebebeb;
+  --line:       #e0e0e0;
+  --line2:      #cccccc;
+  --black:      #1a1a1a;
+  --gray:       #666680;
+  --gray2:      #999ab0;
+  --teal-lt:    rgba(16,163,127,0.12);
+  --teal-md:    rgba(16,163,127,0.20);
+  --sky-lt:     rgba(59,158,221,0.10);
+  --orng-lt:    rgba(155,109,255,0.10);
+  --red-lt:     rgba(239,68,68,0.10);
+  --grn-lt:     rgba(16,163,127,0.10);
+  --sidebar-bg: #f0f0f0;
+  --topbar-bg:  rgba(250,250,250,0.95);
 }
 
 html{font-size:14px;-webkit-font-smoothing:antialiased}
@@ -47,7 +69,7 @@ body{background:var(--white);color:var(--black);font-family:var(--sans);height:1
 /* ── SIDEBAR ────────────────────────────────────────────────────────── */
 .sidebar{
   width:260px;flex-shrink:0;
-  background:#171717;
+  background:var(--sidebar-bg);
   border-right:1px solid var(--line);
   display:flex;flex-direction:column;
   height:100vh;overflow-y:auto;overflow-x:hidden;
@@ -107,7 +129,7 @@ body{background:var(--white);color:var(--black);font-family:var(--sans);height:1
 .main-area{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh;overflow-y:auto}
 .topbar{
   height:52px;padding:0 24px;
-  background:rgba(33,33,33,0.95);
+  background:var(--topbar-bg);
   backdrop-filter:blur(24px);
   -webkit-backdrop-filter:blur(24px);
   border-bottom:1px solid var(--line);
@@ -123,6 +145,8 @@ body{background:var(--white);color:var(--black);font-family:var(--sans);height:1
 .hamburger:hover{color:var(--black);background:var(--off)}
 .topbar-title{font-weight:600;font-size:0.9rem;color:var(--black);flex:1}
 .topbar-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.theme-toggle{width:32px;height:32px;border-radius:6px;border:none;background:transparent;color:var(--gray);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0}
+.theme-toggle:hover{color:var(--black);background:var(--off)}
 
 /* ── KPI BAND ───────────────────────────────────────────────────────── */
 .kpi-band{
@@ -591,6 +615,7 @@ td:first-child{text-align:center}
       </svg>
     </button>
     <div class="topbar-right" id="topbar-right"></div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
   </header>
 
   <!-- KPI BAND -->
@@ -611,6 +636,7 @@ td:first-child{text-align:center}
       <div class="fg"><label class="flbl">Client Name</label><input class="finp" id="f-name" placeholder="e.g. Acme Corp"></div>
       <div class="fg"><label class="flbl">Industry</label><input class="finp" id="f-tag" placeholder="e.g. E-commerce"></div>
       <div class="fg"><label class="flbl">Last Delivery</label><input class="finp" id="f-date" type="date"></div>
+      <div class="fg"><label class="flbl">Cycle (days)</label><input class="finp" id="f-cycle" type="number" min="1" max="730" placeholder="90"></div>
       <div class="fg"><label class="flbl">Status</label>
         <select class="fsel" id="f-status">
           <option value="scheduled">Scheduled</option>
@@ -800,7 +826,8 @@ clients.forEach(c=>{ if(!c.contentBoard) return;
 function save(){ localStorage.setItem('cf3', JSON.stringify(clients)); }
 
 // ── HELPERS ───────────────────────────────────────────────────────────
-const nextDue = c => { let d=new Date(c.last); d.setDate(d.getDate()+CYCLE); return d; };
+const cyc     = c => c.cycle || CYCLE;
+const nextDue = c => { let d=new Date(c.last); d.setDate(d.getDate()+cyc(c)); return d; };
 const dLeft   = c => { let n=new Date(); n.setHours(0,0,0,0); return Math.round((nextDue(c)-n)/86400000); };
 const pct     = c => { let s=new Date(c.last),e=nextDue(c),n=new Date(); return Math.min(100,Math.max(0,(n-s)/(e-s)*100)); };
 
@@ -1102,6 +1129,7 @@ function openAdd(){
   document.getElementById('mt-sub').textContent='Add a new client to your pipeline.';
   ['f-name','f-tag','f-notes'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('f-cycle').value=90;
   document.getElementById('f-status').value='scheduled';
   populateAssigneeSelect(null);
   renderItemsModal();
@@ -1117,6 +1145,7 @@ function openEdit(id){
   document.getElementById('f-name').value=c.name;
   document.getElementById('f-tag').value=c.tag||'';
   document.getElementById('f-date').value=c.last;
+  document.getElementById('f-cycle').value=c.cycle||90;
   document.getElementById('f-status').value=c.s;
   document.getElementById('f-notes').value=c.notes||'';
   populateAssigneeSelect(c.assignee||null);
@@ -1128,6 +1157,7 @@ function saveClient(){
   if(!name){ toast('Name is required','red'); return; }
   const assigneeVal=document.getElementById('f-assignee').value;
   const d={name, tag:document.getElementById('f-tag').value.trim(), last:document.getElementById('f-date').value,
+    cycle:parseInt(document.getElementById('f-cycle').value)||90,
     s:document.getElementById('f-status').value, notes:document.getElementById('f-notes').value.trim(),
     assignee:assigneeVal?parseInt(assigneeVal):null, items:[...editItems]};
   if(editId) Object.assign(clients.find(x=>x.id===editId),d);
@@ -1417,6 +1447,23 @@ function toast(msg,type='teal'){
   w.appendChild(el);
   setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(8px)'; el.style.transition='all 0.25s'; setTimeout(()=>el.remove(),250); },3000);
 }
+
+// ── THEME ──────────────────────────────────────────────────────────────
+function toggleTheme(){
+  const light=document.documentElement.classList.toggle('light');
+  document.getElementById('theme-toggle').textContent=light?'☀️':'🌙';
+  localStorage.setItem('cf-theme',light?'light':'dark');
+}
+// Apply saved theme before first render
+(function(){
+  if(localStorage.getItem('cf-theme')==='light'){
+    document.documentElement.classList.add('light');
+    document.addEventListener('DOMContentLoaded',()=>{
+      const btn=document.getElementById('theme-toggle');
+      if(btn) btn.textContent='☀️';
+    });
+  }
+})();
 
 render();
 </script>
