@@ -355,6 +355,14 @@ td:first-child{text-align:center}
 .ss-delivered{background:var(--grn-lt);color:#30D158;border-color:rgba(48,209,88,0.2)}
 .ss-scheduled option,.ss-inprogress option,.ss-review option,.ss-delivered option{background:var(--off2);color:var(--black)}
 
+/* days cell */
+.days-cell{cursor:pointer;display:inline-flex;align-items:baseline;gap:4px}
+.days-num{font-size:1.15rem;font-weight:700;font-family:var(--serif);line-height:1;letter-spacing:-0.5px}
+.days-unit{font-size:0.68rem;font-weight:600;color:var(--gray2)}
+.days-edit{font-size:0.65rem;color:var(--gray2);opacity:0;transition:opacity 0.14s;margin-left:2px}
+.days-cell:hover .days-edit{opacity:1}
+.days-inp{background:var(--off2);border:1px solid var(--teal);border-radius:5px;color:var(--black);font-family:var(--sans);font-size:0.9rem;font-weight:700;padding:3px 7px;width:72px;outline:none;box-shadow:0 0 0 2px var(--teal-md)}
+
 /* sortable headers */
 .th-sort{cursor:pointer;user-select:none}
 .th-sort:hover{color:var(--gray)!important}
@@ -872,10 +880,10 @@ function memberChip(c){
 
 function renderCard(c){
   const dl=dLeft(c), pp=pct(c), done=c.s==='delivered';
-  const pColor=done?'var(--teal)':pp>=100?'var(--red)':pp>75?'var(--orange)':'var(--teal)';
-  const pWidth=done?100:pp;
+  const pColor=done?'var(--teal)':dl<=67?'var(--red)':'var(--teal)';
+  const pWidth=done?100:Math.min(100,Math.max(0,(cyc(c)-dl)/cyc(c)*100));
   let dtTxt=done?'Delivered ✓':dl<0?`${Math.abs(dl)}d overdue`:`${dl}d left`;
-  let dtCol=done?'var(--teal)':dl<0?'var(--red)':dl<=7?'var(--orange)':'var(--teal)';
+  let dtCol=done?'var(--teal)':dl<=67?'var(--red)':'var(--teal)';
   const m=team.find(x=>x.id===c.assignee);
   let actHtml='';
   if(c.s==='scheduled')  actHtml=`<button class="btn btn-line" style="font-size:0.7rem;padding:4px 10px" onclick="advance(${c.id},'inprogress')">▷ Start</button>`;
@@ -973,9 +981,8 @@ function render(){
         else if(dl<0){dtCls='dt-over';dtTxt=`${Math.abs(dl)}d overdue`}
         else if(dl<=14){dtCls='dt-soon';dtTxt=`${dl}d left`}
         const dFmt=nextDue(c).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-        const pColor=done?'var(--teal)':pp>=100?'var(--red)':pp>75?'var(--orange)':'var(--teal)';
-        const pWidth=done?100:pp;
-        const pLbl=done?'Delivered ✓':`${Math.round(pp)}% of cycle`;
+        const dColor=done?'var(--teal)':dl<=0?'var(--red)':dl<=67?'var(--red)':'var(--teal)';
+        const daysLbl=done?'Delivered ✓':dl<=0?`${Math.abs(dl)}d overdue`:`${dl}d left`;
         let qcHtml=`<span class="qc-none">—</span>`;
         if(c.s==='review')    qcHtml=`<span class="qc-pend">${c.qc.length}/${QC.length} checked</span><div class="qc-sub">Awaiting review</div>`;
         if(c.s==='delivered') qcHtml=`<span class="qc-done">✓ Approved</span>${c.rev>0?`<div class="qc-sub">${c.rev} rev.</div>`:''}`;
@@ -997,10 +1004,16 @@ function render(){
           </td>
           <td>${memberChip(c)||'<span style="color:var(--gray2);font-size:0.78rem">—</span>'}</td>
           <td><div><span class="due-date">${dFmt}</span><span class="due-tag ${dtCls}">${dtTxt}</span></div></td>
-          <td><div class="prog">
-            <div class="prog-track"><div class="prog-fill" style="width:${pWidth}%;background:${pColor}"></div></div>
-            <span class="prog-lbl" style="color:${pColor}">${pLbl}</span>
-          </div></td>
+          <td onclick="editDays(event,${c.id})">
+            ${done
+              ? `<span class="days-num" style="color:var(--teal)">Delivered ✓</span>`
+              : `<span class="days-cell">
+                  <span class="days-num" style="color:${dColor}">${dl<=0?Math.abs(dl):dl}</span>
+                  <span class="days-unit" style="color:${dColor}">${dl<=0?'d overdue':'d left'}</span>
+                  <span class="days-edit">✎</span>
+                </span>`
+            }
+          </td>
           <td><div>${qcHtml}</div></td>
           <td><div class="acts">
             ${actHtml}
@@ -1019,7 +1032,7 @@ function render(){
         <th onclick="setSort('status')"class="th-sort${sCol==='status'?' th-on':''}">Status ${sa('status')}</th>
         <th>Assigned</th>
         <th onclick="setSort('due')"   class="th-sort${sCol==='due'   ?' th-on':''}">Next Due ${sa('due')}</th>
-        <th onclick="setSort('cycle')" class="th-sort${sCol==='cycle' ?' th-on':''}" style="width:110px">Cycle ${sa('cycle')}</th>
+        <th onclick="setSort('cycle')" class="th-sort${sCol==='cycle' ?' th-on':''}" style="width:100px">Days Left ${sa('cycle')}</th>
         <th>QC</th><th>Actions</th>
       </tr></thead>
       <tbody>${rows}</tbody>
@@ -1042,6 +1055,28 @@ function render(){
 }
 
 // ── FILTER / SEARCH ───────────────────────────────────────────────────
+function editDays(e,id){
+  const c=clients.find(x=>x.id===id);
+  if(!c||c.s==='delivered') return;
+  e.stopPropagation();
+  const td=e.currentTarget;
+  const cur=dLeft(c);
+  td.innerHTML=`<input class="days-inp" type="number" value="${cur}"
+    onblur="saveDays(${id},this.value)"
+    onkeydown="if(event.key==='Enter')this.blur();if(event.key==='Escape')render()">`;
+  const inp=td.querySelector('input');
+  inp.focus(); inp.select();
+}
+function saveDays(id,val){
+  const days=parseInt(val);
+  if(isNaN(days)){render();return;}
+  const c=clients.find(x=>x.id===id);
+  if(!c) return;
+  const today=new Date(); today.setHours(0,0,0,0);
+  c.last=new Date(today.getTime()+(days-cyc(c))*86400000).toISOString().split('T')[0];
+  save(); render();
+  toast(`${c.name}: ${days}d remaining`,'teal');
+}
 function changeStatus(id,s){
   const c=clients.find(x=>x.id===id);
   if(!c||c.s===s) return;
