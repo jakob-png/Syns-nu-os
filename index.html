@@ -1045,7 +1045,12 @@ function render(){
 function changeStatus(id,s){
   const c=clients.find(x=>x.id===id);
   if(!c||c.s===s) return;
-  c.s=s; save(); render();
+  c.s=s;
+  if(s==='scheduled'){
+    c.last=new Date().toISOString().split('T')[0];
+    c.qc=[]; c.qn='';
+  }
+  save(); render();
   const lbl={scheduled:'Scheduled',inprogress:'In Progress',review:'Review',delivered:'Delivered'};
   toast(`${c.name} → ${lbl[s]}`,'teal');
 }
