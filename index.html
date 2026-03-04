@@ -346,6 +346,15 @@ td:first-child{text-align:center}
 .btn-ico{padding:6px 9px;border-color:var(--line);background:transparent;color:var(--gray2)}
 .btn-ico:hover{border-color:var(--line2);color:var(--black);background:var(--off2)}
 
+/* status dropdown */
+.status-sel{font-family:var(--sans);font-size:0.71rem;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;text-align:center}
+.status-sel:focus{box-shadow:0 0 0 2px var(--teal-md)}
+.ss-scheduled{background:var(--off2);color:var(--gray);border-color:var(--line2)}
+.ss-inprogress{background:var(--sky-lt);color:#7dd9ff;border-color:rgba(90,200,250,0.2)}
+.ss-review{background:var(--orng-lt);color:#bf7fff;border-color:rgba(191,127,255,0.2)}
+.ss-delivered{background:var(--grn-lt);color:#30D158;border-color:rgba(48,209,88,0.2)}
+.ss-scheduled option,.ss-inprogress option,.ss-review option,.ss-delivered option{background:var(--off2);color:var(--black)}
+
 /* sortable headers */
 .th-sort{cursor:pointer;user-select:none}
 .th-sort:hover{color:var(--gray)!important}
@@ -975,7 +984,14 @@ function render(){
         rows+=`<tr>
           <td><span class="rank ${rankCls}">${rankVal}</span></td>
           <td><div><div class="cl-name">${c.name}</div><span class="cl-tag">${c.tag||''}</span></div></td>
-          <td><span class="badge ${bCls}">${bLbl}</span></td>
+          <td>
+            <select class="status-sel ss-${c.s}" onchange="changeStatus(${c.id},this.value)" onclick="event.stopPropagation()">
+              <option value="scheduled"${c.s==='scheduled'?' selected':''}>Scheduled</option>
+              <option value="inprogress"${c.s==='inprogress'?' selected':''}>In Progress</option>
+              <option value="review"${c.s==='review'?' selected':''}>Review</option>
+              <option value="delivered"${c.s==='delivered'?' selected':''}>Delivered</option>
+            </select>
+          </td>
           <td>${memberChip(c)||'<span style="color:var(--gray2);font-size:0.78rem">—</span>'}</td>
           <td><div><span class="due-date">${dFmt}</span><span class="due-tag ${dtCls}">${dtTxt}</span></div></td>
           <td><div class="prog">
@@ -1023,6 +1039,13 @@ function render(){
 }
 
 // ── FILTER / SEARCH ───────────────────────────────────────────────────
+function changeStatus(id,s){
+  const c=clients.find(x=>x.id===id);
+  if(!c||c.s===s) return;
+  c.s=s; save(); render();
+  const lbl={scheduled:'Scheduled',inprogress:'In Progress',review:'Review',delivered:'Delivered'};
+  toast(`${c.name} → ${lbl[s]}`,'teal');
+}
 function setFilter(f){
   fil=f;
   document.querySelectorAll('.sb-item[data-f]').forEach(x=>x.classList.remove('active'));
