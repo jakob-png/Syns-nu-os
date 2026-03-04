@@ -479,16 +479,6 @@ td:first-child{text-align:center}
 .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:8px}
 .avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#0f1117;flex-shrink:0}
 
-/* ── CONTENT ITEMS ───────────────────────────────────────────────────── */
-.items-box{background:var(--off2);border:1px solid var(--line);border-radius:var(--r);padding:0 12px;margin-bottom:8px;max-height:180px;overflow-y:auto}
-.item-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
-.item-row:last-child{border-bottom:none}
-.item-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;flex-shrink:0;transition:all 0.14s;cursor:pointer}
-.item-check.on{background:var(--teal);border-color:var(--teal);color:var(--white)}
-.item-title{flex:1;font-size:0.8rem;color:var(--black)}
-.item-meta{font-size:0.65rem;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--off);color:var(--gray);border:1px solid var(--line);white-space:nowrap}
-.item-del{font-size:0.75rem;color:var(--gray2);cursor:pointer;padding:3px 6px;border-radius:4px;border:none;background:none;transition:all 0.12s}
-.item-del:hover{color:var(--red);background:var(--red-lt)}
 
 /* ── TEAM ────────────────────────────────────────────────────────────── */
 .avatar-chip{display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:600;padding:2px 8px 2px 4px;border-radius:20px;background:var(--off2);border:1px solid var(--line2);white-space:nowrap}
@@ -657,22 +647,6 @@ td:first-child{text-align:center}
       </div>
       <div class="fg"><label class="flbl">Notes</label><input class="finp" id="f-notes" placeholder="Optional notes…"></div>
     </div>
-    <div class="fg" style="margin-bottom:8px">
-      <label class="flbl" style="margin-bottom:8px;display:block">Content Plan</label>
-      <div class="items-box" id="items-list-modal"></div>
-      <div style="display:flex;gap:6px;margin-top:8px">
-        <input class="finp" id="i-title" placeholder="Content title…" style="flex:1">
-        <select class="fsel" id="i-type" style="width:110px">
-          <option>Reel</option><option>Story</option><option>Post</option>
-          <option>Video</option><option>Shorts</option><option>Podcast</option><option>Blog</option>
-        </select>
-        <select class="fsel" id="i-plat" style="width:120px">
-          <option>Instagram</option><option>YouTube</option><option>TikTok</option>
-          <option>LinkedIn</option><option>Facebook</option><option>X</option>
-        </select>
-        <button class="btn btn-teal" onclick="addItem()">+ Add</button>
-      </div>
-    </div>
     <div class="fg" style="margin-top:8px">
       <label class="flbl" style="margin-bottom:8px;display:block">Marketing Plan</label>
       <div id="pdf-area"></div>
@@ -823,7 +797,7 @@ if (!clients) {
 
 let nid = Math.max(...clients.map(c=>c.id),0)+1;
 let fil='all', q='', editId=null, revId=null, revChecks=[], sCol='due', sDir=1;
-let view='table', filterAssignee=null, editItems=[];
+let view='table', filterAssignee=null;
 let boardClientId=null, ceColId=null, ceCardId=null;
 let editPdf=null; // { name, size, data } during modal edit
 let kbNextColId=1000, kbNextCardId=10000;
@@ -886,16 +860,6 @@ function memberChip(c){
   return `<span class="avatar-chip"><span class="avatar" style="background:${m.color}">${m.name[0]}</span>${m.name}</span>`;
 }
 
-function itemsBar(c){
-  const items=c.items||[];
-  if(!items.length) return `<span class="qc-none">—</span>`;
-  const done=items.filter(x=>x.done).length;
-  const pColor=done===items.length?'var(--teal)':done>0?'var(--orange)':'var(--gray2)';
-  return `<div class="prog">
-    <div class="prog-track"><div class="prog-fill" style="width:${Math.round(done/items.length*100)}%;background:${pColor}"></div></div>
-    <span class="prog-lbl">${done}/${items.length} done</span>
-  </div>`;
-}
 
 function renderCard(c){
   const dl=dLeft(c), pp=pct(c), done=c.s==='delivered';
@@ -1019,7 +983,6 @@ function render(){
             <span class="prog-lbl">${Math.round(pp)}% of cycle</span>
           </div></td>
           <td><div>${qcHtml}</div></td>
-          <td>${itemsBar(c)}</td>
           <td><div class="acts">
             ${actHtml}
             ${c.pdf?`<button class="btn btn-ico btn-line" onclick="downloadPdfDirect(${c.id})" title="${c.pdf.name}" style="font-size:0.75rem">📄</button>`:''}
@@ -1038,7 +1001,7 @@ function render(){
         <th>Assigned</th>
         <th onclick="setSort('due')"   class="th-sort${sCol==='due'   ?' th-on':''}">Next Due ${sa('due')}</th>
         <th onclick="setSort('cycle')" class="th-sort${sCol==='cycle' ?' th-on':''}" style="width:110px">Cycle ${sa('cycle')}</th>
-        <th>QC</th><th style="width:110px">Plan</th><th>Actions</th>
+        <th>QC</th><th>Actions</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`;
@@ -1137,7 +1100,7 @@ function populateAssigneeSelect(currentId){
     team.map(m=>`<option value="${m.id}"${m.id===currentId?' selected':''}>${m.name}</option>`).join('');
 }
 function openAdd(){
-  editId=null; editItems=[];
+  editId=null;
   document.getElementById('mt-title').textContent='New Client';
   document.getElementById('mt-sub').textContent='Add a new client to your pipeline.';
   ['f-name','f-tag','f-notes'].forEach(i=>document.getElementById(i).value='');
@@ -1146,14 +1109,12 @@ function openAdd(){
   document.getElementById('f-status').value='scheduled';
   editPdf=null; renderPdfArea();
   populateAssigneeSelect(null);
-  renderItemsModal();
   open_('mClient');
   setTimeout(()=>document.getElementById('f-name').focus(),120);
 }
 function openEdit(id){
   editId=id;
   const c=clients.find(x=>x.id===id);
-  editItems=[...(c.items||[])];
   document.getElementById('mt-title').textContent='Edit Client';
   document.getElementById('mt-sub').textContent=c.name;
   document.getElementById('f-name').value=c.name;
@@ -1164,7 +1125,6 @@ function openEdit(id){
   document.getElementById('f-notes').value=c.notes||'';
   editPdf=c.pdf||null; renderPdfArea();
   populateAssigneeSelect(c.assignee||null);
-  renderItemsModal();
   open_('mClient');
 }
 function saveClient(){
@@ -1174,7 +1134,7 @@ function saveClient(){
   const d={name, tag:document.getElementById('f-tag').value.trim(), last:document.getElementById('f-date').value,
     cycle:parseInt(document.getElementById('f-cycle').value)||90,
     s:document.getElementById('f-status').value, notes:document.getElementById('f-notes').value.trim(),
-    assignee:assigneeVal?parseInt(assigneeVal):null, items:[...editItems], pdf:editPdf};
+    assignee:assigneeVal?parseInt(assigneeVal):null, pdf:editPdf};
   if(editId) Object.assign(clients.find(x=>x.id===editId),d);
   else clients.push({id:nid++,...d,qc:[],qn:'',rev:0});
   save(); close_('mClient'); render();
@@ -1250,28 +1210,6 @@ function removeMember(id){
 }
 document.addEventListener('DOMContentLoaded',()=>{ renderTeamList(); });
 
-// ── CONTENT ITEMS ─────────────────────────────────────────────────────
-function renderItemsModal(){
-  const el=document.getElementById('items-list-modal'); if(!el) return;
-  if(!editItems.length){ el.innerHTML=`<div style="color:var(--gray2);font-size:0.78rem;padding:10px;text-align:center">No content items yet — add one below.</div>`; return; }
-  el.innerHTML=editItems.map((it,i)=>`<div class="item-row">
-    <div class="item-check${it.done?' on':''}" onclick="toggleItem(${i})">${it.done?'✓':''}</div>
-    <span class="item-title">${it.title}</span>
-    <span class="item-meta">${it.type} · ${it.platform}</span>
-    <button class="item-del" onclick="removeItem(${i})">✕</button>
-  </div>`).join('');
-}
-function addItem(){
-  const title=document.getElementById('i-title').value.trim(); if(!title) return;
-  const type=document.getElementById('i-type').value;
-  const platform=document.getElementById('i-plat').value;
-  const id=Math.max(0,...editItems.map(x=>x.id||0))+1;
-  editItems.push({id, title, type, platform, done:false});
-  document.getElementById('i-title').value='';
-  renderItemsModal();
-}
-function removeItem(i){ editItems.splice(i,1); renderItemsModal(); }
-function toggleItem(i){ editItems[i].done=!editItems[i].done; renderItemsModal(); }
 
 // ── MARKETING PLAN PDF ────────────────────────────────────────────────
 function renderPdfArea(){
