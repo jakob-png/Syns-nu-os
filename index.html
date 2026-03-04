@@ -547,6 +547,13 @@ td:first-child{text-align:center}
 .kb-new-col-btn{min-width:190px;padding:9px 16px;border-radius:8px;border:1.5px dashed #ccc;background:transparent;color:#999;font-size:0.78rem;cursor:pointer;font-family:var(--sans);transition:all 0.14s;white-space:nowrap;display:flex;align-items:center;gap:6px}
 .kb-new-col-btn:hover{border-color:#10a37f;color:#10a37f;background:rgba(16,163,127,0.07)}
 
+/* ── PDF UPLOAD ZONE ─────────────────────────────────────────────────── */
+.pdf-zone{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px dashed var(--line2);border-radius:var(--r);background:var(--off2);cursor:pointer;transition:border-color 0.14s}
+.pdf-zone:hover{border-color:var(--teal)}
+.pdf-zone-icon{font-size:1.3rem;flex-shrink:0;opacity:0.6}
+.pdf-name{font-size:0.8rem;font-weight:600;color:var(--black);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pdf-meta{font-size:0.68rem;color:var(--gray2);margin-top:2px}
+
 /* card edit modal sits above board modal */
 #mCardEdit{z-index:600}
 /* board modal anchored to top */
@@ -665,6 +672,10 @@ td:first-child{text-align:center}
         </select>
         <button class="btn btn-teal" onclick="addItem()">+ Add</button>
       </div>
+    </div>
+    <div class="fg" style="margin-top:8px">
+      <label class="flbl" style="margin-bottom:8px;display:block">Marketing Plan</label>
+      <div id="pdf-area"></div>
     </div>
     <div class="modal-ft">
       <button class="btn btn-line" onclick="close_('mClient')">Cancel</button>
@@ -814,6 +825,7 @@ let nid = Math.max(...clients.map(c=>c.id),0)+1;
 let fil='all', q='', editId=null, revId=null, revChecks=[], sCol='due', sDir=1;
 let view='table', filterAssignee=null, editItems=[];
 let boardClientId=null, ceColId=null, ceCardId=null;
+let editPdf=null; // { name, size, data } during modal edit
 let kbNextColId=1000, kbNextCardId=10000;
 // Sync ID counters from stored data
 clients.forEach(c=>{ if(!c.contentBoard) return;
@@ -1010,6 +1022,7 @@ function render(){
           <td>${itemsBar(c)}</td>
           <td><div class="acts">
             ${actHtml}
+            ${c.pdf?`<button class="btn btn-ico btn-line" onclick="downloadPdfDirect(${c.id})" title="${c.pdf.name}" style="font-size:0.75rem">📄</button>`:''}
             <button class="btn btn-ico btn-line" onclick="openBoard(${c.id})" title="Content Board" style="font-size:0.75rem">⊞</button>
             <button class="btn btn-ico btn-line" onclick="openEdit(${c.id})" title="Edit">✎</button>
             <button class="btn btn-ico btn-red"  onclick="del(${c.id})"     title="Delete">✕</button>
@@ -1131,6 +1144,7 @@ function openAdd(){
   document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('f-cycle').value=90;
   document.getElementById('f-status').value='scheduled';
+  editPdf=null; renderPdfArea();
   populateAssigneeSelect(null);
   renderItemsModal();
   open_('mClient');
@@ -1148,6 +1162,7 @@ function openEdit(id){
   document.getElementById('f-cycle').value=c.cycle||90;
   document.getElementById('f-status').value=c.s;
   document.getElementById('f-notes').value=c.notes||'';
+  editPdf=c.pdf||null; renderPdfArea();
   populateAssigneeSelect(c.assignee||null);
   renderItemsModal();
   open_('mClient');
@@ -1159,7 +1174,7 @@ function saveClient(){
   const d={name, tag:document.getElementById('f-tag').value.trim(), last:document.getElementById('f-date').value,
     cycle:parseInt(document.getElementById('f-cycle').value)||90,
     s:document.getElementById('f-status').value, notes:document.getElementById('f-notes').value.trim(),
-    assignee:assigneeVal?parseInt(assigneeVal):null, items:[...editItems]};
+    assignee:assigneeVal?parseInt(assigneeVal):null, items:[...editItems], pdf:editPdf};
   if(editId) Object.assign(clients.find(x=>x.id===editId),d);
   else clients.push({id:nid++,...d,qc:[],qn:'',rev:0});
   save(); close_('mClient'); render();
@@ -1257,6 +1272,48 @@ function addItem(){
 }
 function removeItem(i){ editItems.splice(i,1); renderItemsModal(); }
 function toggleItem(i){ editItems[i].done=!editItems[i].done; renderItemsModal(); }
+
+// ── MARKETING PLAN PDF ────────────────────────────────────────────────
+function renderPdfArea(){
+  const el=document.getElementById('pdf-area');
+  if(!el) return;
+  if(editPdf){
+    el.innerHTML=`<div class="pdf-zone" style="cursor:default">
+      <span class="pdf-zone-icon">📄</span>
+      <div style="flex:1;min-width:0">
+        <div class="pdf-name">${esc2(editPdf.name)}</div>
+        <div class="pdf-meta">${(editPdf.size/1024).toFixed(0)} KB</div>
+      </div>
+      <button class="btn btn-teal" onclick="downloadEditPdf()">↓ Download</button>
+      <button class="btn btn-red" onclick="removePdf()">✕ Remove</button>
+    </div>`;
+  } else {
+    el.innerHTML=`<label class="pdf-zone" for="pdf-input">
+      <span class="pdf-zone-icon">📄</span>
+      <span style="font-size:0.8rem;color:var(--gray)">Click to upload PDF marketing plan</span>
+      <input type="file" id="pdf-input" accept=".pdf,application/pdf" style="display:none" onchange="handlePdfUpload(this.files[0])">
+    </label>`;
+  }
+}
+function handlePdfUpload(file){
+  if(!file) return;
+  if(file.size>8*1024*1024){ toast('File too large — max 8 MB','red'); return; }
+  if(file.size>3*1024*1024) toast('Large file — may hit browser storage limits','purple');
+  const reader=new FileReader();
+  reader.onload=e=>{ editPdf={name:file.name,size:file.size,data:e.target.result}; renderPdfArea(); };
+  reader.readAsDataURL(file);
+}
+function downloadEditPdf(){
+  if(!editPdf) return;
+  const a=document.createElement('a'); a.href=editPdf.data; a.download=editPdf.name; a.click();
+}
+function removePdf(){ editPdf=null; renderPdfArea(); }
+function downloadPdfDirect(id){
+  const c=clients.find(x=>x.id===id);
+  if(!c||!c.pdf) return;
+  const a=document.createElement('a'); a.href=c.pdf.data; a.download=c.pdf.name; a.click();
+}
+function esc2(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
 // ── CONTENT BOARD ─────────────────────────────────────────────────────
 const KB_COLORS = ['#b2eae4','#b3d9f7','#f7e2b3','#dbb3f7','#f7b3c6','#c6f7d4','#f7d9b3'];
